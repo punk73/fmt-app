@@ -1,23 +1,46 @@
 import logo from './logo.svg';
 import './App.css';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import ClassComponent from './ClassComponent';
 
 function App() {
+
+  const [options, SetOptions ] = useState([]);
+
+  useEffect(() => {
+    axios.get("https://dummyjson.com/products")
+    .then(res=> res.data)
+    .then(res => {
+      console.log(res.products);
+      // sort here
+      const products = res.products;
+      const sortedTitle = products.sort((a,b) => (
+        a.title - b.title
+      ));
+      console.log(sortedTitle)
+      SetOptions(sortedTitle);
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>im fmt component</h1>
+
+
+      <select name="title" id="title">
+        {
+          options.map((val, index) => (
+            <option value={val.id}>{val.title}</option>
+          ))
+        }
+      </select>
+
+
+      <ClassComponent options={options} />
     </div>
   );
 }
